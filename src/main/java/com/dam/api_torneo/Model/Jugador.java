@@ -9,7 +9,7 @@ import lombok.Data;
 
 /**
  * Clase de entidad que actúa como modelo que define la estructura de los datos.
- * Esta clase Java se mapea a tabla Equipo de la base de datos.
+ * Esta clase Java se mapea a la tabla Jugador de la base de datos.
  */
 
 @Entity
