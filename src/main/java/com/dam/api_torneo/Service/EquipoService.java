@@ -13,14 +13,18 @@ import com.dam.api_torneo.Repository.EquipoRepository;
  * Es el "cerebro" que coordina las operaciones.
  */
 
+// anotación que indica que esta clase contiene la lógica de negocio de la
+// aplicación.
 @Service
 public class EquipoService {
 
+    // con esta anotación, Spring inyectará automáticamente el repositorio para
+    // permitir el acceso a la base de datos
     @Autowired
     EquipoRepository equipoRepository;
 
     /**
-     * devuelve la lista de todos los equipos llamando al método
+     * obtiene y devuelve la lista de todos los equipos llamando al método
      * findAll() del repositorio.
      * 
      * @return lista con todos los equipos
