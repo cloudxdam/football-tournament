@@ -48,4 +48,16 @@ public class EquipoService {
         return equipoRepository.findById(id);
     }
 
+    /**
+     * Crea un nuevo objeto en la base de datos, en este caso un nuevo Equipo.
+     * 
+     * @param equipo el objeto que contiene los datos del cliente y que será
+     *               guardado
+     * @return El objeto que es guardado en la base de datos con su id generado
+     *         automáticamente
+     */
+    public Equipo crearObjeto(Equipo equipo) {
+        return equipoRepository.save(equipo);
+    }
+
 }

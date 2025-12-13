@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dam.api_torneo.Model.Jugador;
 import com.dam.api_torneo.Model.Partido;
 import com.dam.api_torneo.Service.PartidoService;
 
@@ -42,19 +45,34 @@ public class PartidoController {
      * endpoint para buscar un recurso por id
      * 
      * @param id - el id del recurso que queremos buscar
-     * @return el Partido al que corresponde el id proporcionado o null si no existe
+     * @return el Partido al que corresponde el id proporcionado + código HTTP
+     *         200 (ok) o 404 (not found) si el id especificado no existe.
      */
 
     // anotación de método para petición GET con variable (id)
     @GetMapping("/{id}")
-    public Optional<Partido> getById(@PathVariable Long id) {
+    public ResponseEntity<Partido> getById(@PathVariable Long id) {
         Optional<Partido> partido = partidoService.getRecursoPorId(id);
 
         if (partido.isPresent()) {
-            return Optional.of(partido.get());
+            return ResponseEntity.of(partido);
         } else {
-            return Optional.empty();
+            return ResponseEntity.notFound().build();
         }
+    }
+
+    /**
+     * endpoint que crea un nuevo recurso a partir de los datos enviados en el
+     * cuerpo de la petición del cliente.
+     * 
+     * @param partido el objeto recibido en el cuerpo de la petición
+     * @return respuesta con código HTTP 201 (creado) y el objeto creado.
+     */
+
+    @PostMapping
+    public ResponseEntity<Partido> postObject(@RequestBody Partido partido) {
+        Partido nuevoPartido = partidoService.crearObjeto(partido);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoPartido);
     }
 
 }

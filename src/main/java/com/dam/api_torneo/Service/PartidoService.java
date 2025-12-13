@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dam.api_torneo.Model.Jugador;
 import com.dam.api_torneo.Model.Partido;
 import com.dam.api_torneo.Repository.PartidoRepository;
 
@@ -40,6 +39,18 @@ public class PartidoService {
 
     public Optional<Partido> getRecursoPorId(Long id) {
         return partidoRepository.findById(id);
+    }
+
+    /**
+     * Crea un nuevo objeto en la base de datos, en este caso un nuevo Equipo.
+     * 
+     * @param partido el objeto que contiene los datos del cliente y que será
+     *                guardado
+     * @return El objeto que es guardado en la base de datos con su id generado
+     *         automáticamente
+     */
+    public Partido crearObjeto(Partido partido) {
+        return partidoRepository.save(partido);
     }
 
 }

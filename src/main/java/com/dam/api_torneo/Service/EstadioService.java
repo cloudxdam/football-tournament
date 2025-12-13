@@ -39,4 +39,16 @@ public class EstadioService {
         return estadioRepository.findById(id);
     }
 
+    /**
+     * Crea un nuevo objeto en la base de datos, en este caso un nuevo Equipo.
+     * 
+     * @param estadio el objeto que contiene los datos del cliente y que será
+     *                guardado
+     * @return El objeto que es guardado en la base de datos con su id generado
+     *         automáticamente
+     */
+    public Estadio crearObjeto(Estadio estadio) {
+        return estadioRepository.save(estadio);
+    }
+
 }
