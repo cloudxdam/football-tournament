@@ -18,7 +18,7 @@ import com.dam.api_torneo.Service.PartidoService;
  * 
  */
 @RestController
-@RequestMapping("/API/api-torneo")
+@RequestMapping("/API/api-torneo/partidos")
 public class PartidoController {
 
     @Autowired

@@ -18,7 +18,7 @@ import com.dam.api_torneo.Service.EstadioService;
  * 
  */
 @RestController
-@RequestMapping("/API/api-torneo")
+@RequestMapping("/API/api-torneo/estadios")
 public class EstadioController {
 
     @Autowired

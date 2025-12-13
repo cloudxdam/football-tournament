@@ -23,7 +23,7 @@ public class Equipo {
     // anotación que identifica al campo como el Id de la entidad
     @Id
     // anotación que indica la estrategia (mecanismo) de generación del Id a
-    // Hibernate para que lo asigne automáticamente
+    // JPA para que lo asigne automáticamente
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idEquipo;
     private String nombre;

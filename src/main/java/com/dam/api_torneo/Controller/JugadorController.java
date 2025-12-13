@@ -18,7 +18,7 @@ import com.dam.api_torneo.Service.JugadorService;
  * 
  */
 @RestController
-@RequestMapping("API/api-torneo")
+@RequestMapping("API/api-torneo/jugadores")
 public class JugadorController {
 
     @Autowired

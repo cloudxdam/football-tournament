@@ -24,7 +24,7 @@ import com.dam.api_torneo.Service.EquipoService;
 @RestController
 // indicamos a Spring que todos los endpoints definidos en esta clase deben
 // comenzar con el prefijo '/API/api-torneo'
-@RequestMapping("/API/api-torneo")
+@RequestMapping("/API/api-torneo/equipos")
 public class EquipoController {
 
     // Inyectamos la instancia del servicio que contiene la lógica de negocio.
