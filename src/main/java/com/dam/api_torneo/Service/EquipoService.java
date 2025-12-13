@@ -1,6 +1,7 @@
 package com.dam.api_torneo.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,13 +25,27 @@ public class EquipoService {
     EquipoRepository equipoRepository;
 
     /**
-     * obtiene y devuelve la lista de todos los equipos llamando al método
+     * Obtiene y devuelve la lista de todos los equipos llamando al método
      * findAll() del repositorio.
      * 
      * @return lista con todos los equipos
      */
     public List<Equipo> getLista() {
         return equipoRepository.findAll();
+    }
+
+    /**
+     * Busca un recurso por su id llamando al método findByid.
+     * El método devuelve un objeto Optional, que es un contenedor que tendrá
+     * dentro si el recurso existe o si no, estando vacío en este caso y evitando
+     * así una excepción NullPointerException en el caso de que no exista.
+     * 
+     * @param id el id que buscamos
+     * @return Optional, que contendrá si el recurso existe, si no estará vacío.
+     */
+
+    public Optional<Equipo> getRecursoPorId(Long id) {
+        return equipoRepository.findById(id);
     }
 
 }
