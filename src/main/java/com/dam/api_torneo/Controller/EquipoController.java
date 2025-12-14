@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,7 +53,7 @@ public class EquipoController {
     }
 
     /**
-     * endpoint para buscar un recurso por id
+     * Endpoint para buscar un recurso por id
      * 
      * @param id - el id del recurso que queremos buscar
      * @return el Equipo al que corresponde el id proporcionado + código HTTP
@@ -73,7 +74,7 @@ public class EquipoController {
     }
 
     /**
-     * endpoint que crea un nuevo recurso a partir de los datos enviados en el
+     * Endpoint que crea un nuevo recurso a partir de los datos enviados en el
      * cuerpo de la petición del cliente.
      * 
      * @param equipo el objeto recibido en el cuerpo de la petición
@@ -89,6 +90,28 @@ public class EquipoController {
         // datos recibidos y él se encargará de asignarle automáticamente el id
         Equipo nuevoEquipo = equipoService.crearObjeto(equipo);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoEquipo);
+    }
+
+    /**
+     * Endpoint para modificar / actualizar un recurso existente en la base de datos
+     * con los nuevos datos proporcionados por el cliente.
+     * 
+     * @param id     el id proporcionadio para localizar el recurso en la base de
+     *               datos.
+     * @param equipo recurso con los nuevos datos.
+     * @return respuesta con código HTTP 200 (ok) o 404 (not found) si el id no
+     *         existe.
+     */
+
+    @PutMapping("/{id}")
+    // indicamos con las anotaciones los datos que hay que recibir y procesar
+    public ResponseEntity<Equipo> putObject(@PathVariable Long id, @RequestBody Equipo equipo) {
+        Optional<Equipo> equipoActualizado = equipoService.modificarRecurso(id, equipo);
+        if (equipoActualizado.isPresent()) {
+            return ResponseEntity.of(equipoActualizado);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

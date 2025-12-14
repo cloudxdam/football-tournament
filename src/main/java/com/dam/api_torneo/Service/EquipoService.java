@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import com.dam.api_torneo.Model.Equipo;
 import com.dam.api_torneo.Repository.EquipoRepository;
@@ -58,6 +59,36 @@ public class EquipoService {
      */
     public Equipo crearObjeto(Equipo equipo) {
         return equipoRepository.save(equipo);
+    }
+
+    /**
+     * Modifica un recurso en la base de datos. Primero, lo localiza por su id.
+     * Si no lo encuentra, devuelve un contenedor vacío. Si lo encuenta, modifica
+     * el nombre del objeto encontrado por el nombre del objeto proporcionado por
+     * el cliente, lo guarda en la base de datos y devuelve un contenedor con el
+     * objeto modificado.
+     * 
+     * @param id     el id del recurso que el cliente quiere modificar.
+     * @param equipo el recurso con los datos que proporciona el cliente.
+     * @return contenedor con el objeto modificado o vacío si no encuentra el id.
+     */
+
+    public Optional<Equipo> modificarRecurso(Long id, Equipo equipo) {
+        // primero buscamos el recurso que corresponde al id proporcionado por el
+        // cliente
+        Optional<Equipo> equipoBuscado = equipoRepository.findById(id);
+        // si existe, obtenemos los datos del objeto al que corresponde el id
+        if (equipoBuscado.isPresent()) {
+            Equipo equipoAModificar = equipoBuscado.get();
+            // modificamos el nombre del objeto obtenido por el que proporcionó el cliente
+            equipoAModificar.setNombre(equipo.getNombre());
+            // guardamos los datos en la base de datos
+            equipoRepository.save(equipoAModificar);
+            return Optional.of(equipoAModificar);
+
+        } else {
+            return Optional.empty();
+        }
     }
 
 }
