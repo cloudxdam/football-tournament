@@ -3,9 +3,12 @@ package com.dam.api_torneo.Controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.print.DocFlavor.READER;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -94,9 +97,11 @@ public class EquipoController {
 
     /**
      * Endpoint para modificar / actualizar un recurso existente en la base de datos
-     * con los nuevos datos proporcionados por el cliente.
+     * con los nuevos datos proporcionados por el cliente. Solicita la operación a
+     * la capa de servicio, que devuelve un contenedor y, según su contenido
+     * responderá con un código HTTP u otro.
      * 
-     * @param id     el id proporcionadio para localizar el recurso en la base de
+     * @param id     el id proporcionado para localizar el recurso en la base de
      *               datos.
      * @param equipo recurso con los nuevos datos.
      * @return respuesta con código HTTP 200 (ok) o 404 (not found) si el id no
@@ -109,6 +114,29 @@ public class EquipoController {
         Optional<Equipo> equipoActualizado = equipoService.modificarRecurso(id, equipo);
         if (equipoActualizado.isPresent()) {
             return ResponseEntity.of(equipoActualizado);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Endpoint para borrar un recurso de la base de datos según el id especificado
+     * por el cliente. Solicita el borrado a la capa de servicio, que devuelve un
+     * contenedor y, según su contenido, proporcionará una respua con un código HTTP
+     * u otro.
+     * 
+     * @param id el id del recurso a borrar
+     * @return respuesta con código HTTP 204 (no content) Si se encontró el id y
+     *         por tanto se borró el recurso. Si no, devolverá 404 (not found).
+     */
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Equipo> deleteObject(@PathVariable Long id) {
+        Optional<Equipo> equipoBorrado = equipoService.borrarRecurso(id);
+
+        if (equipoBorrado.isPresent()) {
+            return ResponseEntity.noContent().build();
+
         } else {
             return ResponseEntity.notFound().build();
         }

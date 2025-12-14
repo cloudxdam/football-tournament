@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -79,7 +78,9 @@ public class PartidoController {
 
     /**
      * Endpoint para modificar / actualizar un recurso existente en la base de datos
-     * con los nuevos datos proporcionados por el cliente.
+     * con los nuevos datos proporcionados por el cliente. Solicita la operación a
+     * la capa de servicio, que devuelve un contenedor y, según su contenido
+     * responderá con un código HTTP u otro.
      * 
      * @param id      el id proporcionadio para localizar el recurso en la base de
      *                datos.

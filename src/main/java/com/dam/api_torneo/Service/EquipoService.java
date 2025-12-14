@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import com.dam.api_torneo.Model.Equipo;
 import com.dam.api_torneo.Repository.EquipoRepository;
@@ -85,6 +84,27 @@ public class EquipoService {
             // guardamos los datos en la base de datos
             equipoRepository.save(equipoAModificar);
             return Optional.of(equipoAModificar);
+
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Borra / Elimina un recurso de la base de datos. Primero busca si existe
+     * el id proporcionado por el cliente. En caso de que sí, procede a borrar el
+     * recurso y devuelve un contenedor con dicho recurso. En caso de que no,
+     * devuelve un contenedor vacío.
+     * 
+     * @param id el id del recurso a borrar, proporcionado por el cliente.
+     * @return
+     */
+    public Optional<Equipo> borrarRecurso(Long id) {
+        Optional<Equipo> equipoBuscado = equipoRepository.findById(id);
+        if (equipoBuscado.isPresent()) {
+            equipoRepository.deleteById(id);
+
+            return equipoBuscado;
 
         } else {
             return Optional.empty();

@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dam.api_torneo.Model.Equipo;
 import com.dam.api_torneo.Model.Estadio;
 import com.dam.api_torneo.Repository.EstadioRepository;
 

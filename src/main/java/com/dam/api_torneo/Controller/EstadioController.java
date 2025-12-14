@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dam.api_torneo.Model.Equipo;
 import com.dam.api_torneo.Model.Estadio;
 import com.dam.api_torneo.Service.EstadioService;
 
@@ -80,7 +79,9 @@ public class EstadioController {
 
     /**
      * Endpoint para modificar / actualizar un recurso existente en la base de datos
-     * con los nuevos datos proporcionados por el cliente.
+     * con los nuevos datos proporcionados por el cliente. Solicita la operación a
+     * la capa de servicio, que devuelve un contenedor y, según su contenido
+     * responderá con un código HTTP u otro.
      * 
      * @param id      el id proporcionadio para localizar el recurso en la base de
      *                datos.
