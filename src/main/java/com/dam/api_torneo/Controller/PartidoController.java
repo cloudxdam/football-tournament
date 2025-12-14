@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,10 +54,12 @@ public class PartidoController {
     // anotación de método para petición GET con variable (id)
     @GetMapping("/{id}")
     public ResponseEntity<Partido> getById(@PathVariable Long id) {
+
         Optional<Partido> partido = partidoService.getRecursoPorId(id);
 
         if (partido.isPresent()) {
             return ResponseEntity.of(partido);
+
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -72,7 +75,9 @@ public class PartidoController {
 
     @PostMapping
     public ResponseEntity<Partido> postObject(@RequestBody Partido partido) {
-        Partido nuevoPartido = partidoService.crearObjeto(partido);
+
+        Partido nuevoPartido = partidoService.crearRecurso(partido);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoPartido);
     }
 
@@ -100,4 +105,30 @@ public class PartidoController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    /**
+     * Endpoint para borrar un recurso de la base de datos según el id especificado
+     * por el cliente. Solicita el borrado a la capa de servicio, que devuelve un
+     * contenedor y, según su contenido, proporcionará una respuesta con un código
+     * HTTP
+     * u otro.
+     * 
+     * @param id el id del recurso a borrar
+     * @return respuesta con código HTTP 204 (no content) Si se encontró el id y
+     *         por tanto se borró el recurso. Si no, devolverá 404 (not found).
+     */
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Partido> deleteObject(@PathVariable Long id) {
+
+        Optional<Partido> partidoBorrado = partidoService.borrarRecurso(id);
+
+        if (partidoBorrado.isPresent()) {
+            return ResponseEntity.noContent().build();
+
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +41,7 @@ public class EstadioController {
 
     @GetMapping
     public List<Estadio> getAll() {
+
         return estadioService.getLista();
     }
 
@@ -54,10 +56,12 @@ public class EstadioController {
     // anotación de método para petición GET con variable (id)
     @GetMapping("/{id}")
     public ResponseEntity<Estadio> getById(@PathVariable Long id) {
+
         Optional<Estadio> estadio = estadioService.getRecursoPorId(id);
 
         if (estadio.isPresent()) {
             return ResponseEntity.of(estadio);
+
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -73,7 +77,9 @@ public class EstadioController {
 
     @PostMapping
     public ResponseEntity<Estadio> postObject(@RequestBody Estadio estadio) {
-        Estadio nuevoEstadio = estadioService.crearObjeto(estadio);
+
+        Estadio nuevoEstadio = estadioService.crearRecurso(estadio);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoEstadio);
     }
 
@@ -93,10 +99,36 @@ public class EstadioController {
     @PutMapping("/{id}")
     // indicamos con las anotaciones los datos que hay que recibir y procesar
     public ResponseEntity<Estadio> putObject(@PathVariable Long id, @RequestBody Estadio estadio) {
+
         Optional<Estadio> estadioActualizado = estadioService.modificarRecurso(id, estadio);
 
         if (estadioActualizado.isPresent()) {
             return ResponseEntity.of(estadioActualizado);
+
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Endpoint para borrar un recurso de la base de datos según el id especificado
+     * por el cliente. Solicita el borrado a la capa de servicio, que devuelve un
+     * contenedor y, según su contenido, proporcionará una respuesta con un código
+     * HTTP
+     * u otro.
+     * 
+     * @param id el id del recurso a borrar
+     * @return respuesta con código HTTP 204 (no content) Si se encontró el id y
+     *         por tanto se borró el recurso. Si no, devolverá 404 (not found).
+     */
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Estadio> deleteObject(@PathVariable Long id) {
+
+        Optional<Estadio> estadioBorrado = estadioService.borrarRecurso(id);
+
+        if (estadioBorrado.isPresent()) {
+            return ResponseEntity.noContent().build();
 
         } else {
             return ResponseEntity.notFound().build();

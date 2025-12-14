@@ -3,8 +3,6 @@ package com.dam.api_torneo.Controller;
 import java.util.List;
 import java.util.Optional;
 
-import javax.print.DocFlavor.READER;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -89,9 +87,11 @@ public class EquipoController {
     // indicamos con @RequestBody que en la petición del cliente vienen datos que
     // hay que capturar y convertir a un objeto del tipo especificado
     public ResponseEntity<Equipo> postObject(@RequestBody Equipo equipo) {
+
         // con el método del servicio guardamos el objeto a partir de los
         // datos recibidos y él se encargará de asignarle automáticamente el id
-        Equipo nuevoEquipo = equipoService.crearObjeto(equipo);
+        Equipo nuevoEquipo = equipoService.crearRecurso(equipo);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoEquipo);
     }
 
@@ -111,9 +111,12 @@ public class EquipoController {
     @PutMapping("/{id}")
     // indicamos con las anotaciones los datos que hay que recibir y procesar
     public ResponseEntity<Equipo> putObject(@PathVariable Long id, @RequestBody Equipo equipo) {
+
         Optional<Equipo> equipoActualizado = equipoService.modificarRecurso(id, equipo);
+
         if (equipoActualizado.isPresent()) {
             return ResponseEntity.of(equipoActualizado);
+
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -122,7 +125,8 @@ public class EquipoController {
     /**
      * Endpoint para borrar un recurso de la base de datos según el id especificado
      * por el cliente. Solicita el borrado a la capa de servicio, que devuelve un
-     * contenedor y, según su contenido, proporcionará una respua con un código HTTP
+     * contenedor y, según su contenido, proporcionará una respuesta con un código
+     * HTTP
      * u otro.
      * 
      * @param id el id del recurso a borrar
@@ -132,6 +136,7 @@ public class EquipoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Equipo> deleteObject(@PathVariable Long id) {
+
         Optional<Equipo> equipoBorrado = equipoService.borrarRecurso(id);
 
         if (equipoBorrado.isPresent()) {

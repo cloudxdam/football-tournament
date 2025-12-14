@@ -56,7 +56,8 @@ public class EquipoService {
      * @return El objeto que es guardado en la base de datos con su id generado
      *         automáticamente
      */
-    public Equipo crearObjeto(Equipo equipo) {
+    public Equipo crearRecurso(Equipo equipo) {
+
         return equipoRepository.save(equipo);
     }
 
@@ -73,16 +74,22 @@ public class EquipoService {
      */
 
     public Optional<Equipo> modificarRecurso(Long id, Equipo equipo) {
+
         // primero buscamos el recurso que corresponde al id proporcionado por el
         // cliente
         Optional<Equipo> equipoBuscado = equipoRepository.findById(id);
+
         // si existe, obtenemos los datos del objeto al que corresponde el id
         if (equipoBuscado.isPresent()) {
+
             Equipo equipoAModificar = equipoBuscado.get();
+
             // modificamos el nombre del objeto obtenido por el que proporcionó el cliente
             equipoAModificar.setNombre(equipo.getNombre());
+
             // guardamos los datos en la base de datos
             equipoRepository.save(equipoAModificar);
+
             return Optional.of(equipoAModificar);
 
         } else {
@@ -97,15 +104,20 @@ public class EquipoService {
      * devuelve un contenedor vacío.
      * 
      * @param id el id del recurso a borrar, proporcionado por el cliente.
-     * @return
+     * @return el recurso si se encontró o contenedor vacío.
      */
     public Optional<Equipo> borrarRecurso(Long id) {
+
         Optional<Equipo> equipoBuscado = equipoRepository.findById(id);
+
+        // si el recurso existe, lo borra según el id proporcionado
         if (equipoBuscado.isPresent()) {
+
             equipoRepository.deleteById(id);
 
             return equipoBuscado;
 
+            // si no existe, devuelve un contenedor vacío.
         } else {
             return Optional.empty();
         }

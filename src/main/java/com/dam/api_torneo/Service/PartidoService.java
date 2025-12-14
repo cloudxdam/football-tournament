@@ -27,6 +27,7 @@ public class PartidoService {
      *         datos.
      */
     public List<Partido> getLista() {
+
         return partidoRepository.findAll();
     }
 
@@ -38,6 +39,7 @@ public class PartidoService {
      */
 
     public Optional<Partido> getRecursoPorId(Long id) {
+
         return partidoRepository.findById(id);
     }
 
@@ -49,7 +51,8 @@ public class PartidoService {
      * @return El objeto que es guardado en la base de datos con su id generado
      *         automáticamente
      */
-    public Partido crearObjeto(Partido partido) {
+    public Partido crearRecurso(Partido partido) {
+
         return partidoRepository.save(partido);
     }
 
@@ -61,6 +64,7 @@ public class PartidoService {
      * @return contenedor con el objeto modificado o vacío si no encuentra el id.
      */
     public Optional<Partido> modificarRecurso(Long id, Partido partido) {
+
         Optional<Partido> partidoBuscado = partidoRepository.findById(id);
 
         if (partidoBuscado.isPresent()) {
@@ -73,4 +77,28 @@ public class PartidoService {
             return Optional.empty();
         }
     }
+
+    /**
+     * Borra / Elimina un recurso de la base de datos. Primero busca si existe
+     * el id proporcionado por el cliente. En caso de que sí, procede a borrar el
+     * recurso y devuelve un contenedor con dicho recurso. En caso de que no,
+     * devuelve un contenedor vacío.
+     * 
+     * @param id el id del recurso a borrar, proporcionado por el cliente.
+     * @return el recurso si se encontró o contenedor vacío.
+     */
+    public Optional<Partido> borrarRecurso(Long id) {
+
+        Optional<Partido> partidoBuscado = partidoRepository.findById(id);
+
+        if (partidoBuscado.isPresent()) {
+            partidoRepository.deleteById(id);
+
+            return partidoBuscado;
+
+        } else {
+            return Optional.empty();
+        }
+    }
+
 }

@@ -26,6 +26,7 @@ public class JugadorService {
      * @return la lista con todos los jugadores de la base de datos.
      */
     public List<Jugador> getLista() {
+
         return jugadorRepository.findAll();
     }
 
@@ -37,6 +38,7 @@ public class JugadorService {
      */
 
     public Optional<Jugador> getRecursoPorId(Long id) {
+
         return jugadorRepository.findById(id);
     }
 
@@ -48,7 +50,8 @@ public class JugadorService {
      * @return El objeto que es guardado en la base de datos con su id generado
      *         automáticamente
      */
-    public Jugador crearObjeto(Jugador jugador) {
+    public Jugador crearRecurso(Jugador jugador) {
+
         return jugadorRepository.save(jugador);
     }
 
@@ -61,6 +64,7 @@ public class JugadorService {
      */
 
     public Optional<Jugador> modificarRecurso(Long id, Jugador jugador) {
+
         Optional<Jugador> jugadorBuscado = jugadorRepository.findById(id);
 
         if (jugadorBuscado.isPresent()) {
@@ -70,6 +74,30 @@ public class JugadorService {
             jugadorAModificar.setApellidos(jugador.getApellidos());
 
             return Optional.of(jugadorAModificar);
+
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Borra / Elimina un recurso de la base de datos. Primero busca si existe
+     * el id proporcionado por el cliente. En caso de que sí, procede a borrar el
+     * recurso y devuelve un contenedor con dicho recurso. En caso de que no,
+     * devuelve un contenedor vacío.
+     * 
+     * @param id el id del recurso a borrar, proporcionado por el cliente.
+     * @return el recurso si se encontró o contenedor vacío.
+     */
+
+    public Optional<Jugador> borrarRecurso(Long id) {
+
+        Optional<Jugador> jugadorBuscado = jugadorRepository.findById(id);
+
+        if (jugadorBuscado.isPresent()) {
+            jugadorRepository.deleteById(id);
+
+            return jugadorBuscado;
 
         } else {
             return Optional.empty();

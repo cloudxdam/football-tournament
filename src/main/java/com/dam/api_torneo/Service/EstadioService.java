@@ -25,6 +25,7 @@ public class EstadioService {
      * @return la lista con todos los estadios de la base de datos.
      */
     public List<Estadio> getLista() {
+
         return estadioRepository.findAll();
     }
 
@@ -36,6 +37,7 @@ public class EstadioService {
      */
 
     public Optional<Estadio> getRecursoPorId(Long id) {
+
         return estadioRepository.findById(id);
     }
 
@@ -47,7 +49,8 @@ public class EstadioService {
      * @return El objeto que es guardado en la base de datos con su id generado
      *         automáticamente
      */
-    public Estadio crearObjeto(Estadio estadio) {
+    public Estadio crearRecurso(Estadio estadio) {
+
         return estadioRepository.save(estadio);
     }
 
@@ -60,6 +63,7 @@ public class EstadioService {
      */
 
     public Optional<Estadio> modificarRecurso(Long id, Estadio estadio) {
+
         Optional<Estadio> estadioBuscado = estadioRepository.findById(id);
 
         if (estadioBuscado.isPresent()) {
@@ -68,6 +72,29 @@ public class EstadioService {
             estadioRepository.save(estadioAModificar);
 
             return Optional.of(estadioAModificar);
+
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Borra / Elimina un recurso de la base de datos. Primero busca si existe
+     * el id proporcionado por el cliente. En caso de que sí, procede a borrar el
+     * recurso y devuelve un contenedor con dicho recurso. En caso de que no,
+     * devuelve un contenedor vacío.
+     * 
+     * @param id el id del recurso a borrar, proporcionado por el cliente.
+     * @return el recurso si se encontró o contenedor vacío.
+     */
+    public Optional<Estadio> borrarRecurso(Long id) {
+
+        Optional<Estadio> estadioBuscado = estadioRepository.findById(id);
+
+        if (estadioBuscado.isPresent()) {
+            estadioRepository.deleteById(id);
+
+            return estadioBuscado;
 
         } else {
             return Optional.empty();
