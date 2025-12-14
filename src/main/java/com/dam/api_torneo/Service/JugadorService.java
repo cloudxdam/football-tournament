@@ -51,4 +51,28 @@ public class JugadorService {
     public Jugador crearObjeto(Jugador jugador) {
         return jugadorRepository.save(jugador);
     }
+
+    /**
+     * Modifica un recurso en la base de datos localizándolo por su id.
+     * 
+     * @param id      el id del recurso que el cliente quiere modificar.
+     * @param estadio el recurso con los datos que proporciona el cliente.
+     * @return contenedor con el objeto modificado o vacío si no encuentra el id.
+     */
+
+    public Optional<Jugador> modificarRecurso(Long id, Jugador jugador) {
+        Optional<Jugador> jugadorBuscado = jugadorRepository.findById(id);
+
+        if (jugadorBuscado.isPresent()) {
+            Jugador jugadorAModificar = jugadorBuscado.get();
+            jugadorAModificar.setNif(jugador.getNif());
+            jugadorAModificar.setNombre(jugador.getNombre());
+            jugadorAModificar.setApellidos(jugador.getApellidos());
+
+            return Optional.of(jugadorAModificar);
+
+        } else {
+            return Optional.empty();
+        }
+    }
 }

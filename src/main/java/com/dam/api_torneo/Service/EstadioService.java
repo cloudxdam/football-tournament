@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.dam.api_torneo.Model.Equipo;
 import com.dam.api_torneo.Model.Estadio;
 import com.dam.api_torneo.Repository.EstadioRepository;
 
@@ -49,6 +50,29 @@ public class EstadioService {
      */
     public Estadio crearObjeto(Estadio estadio) {
         return estadioRepository.save(estadio);
+    }
+
+    /**
+     * Modifica un recurso en la base de datos localizándolo por su id.
+     * 
+     * @param id      el id del recurso que el cliente quiere modificar.
+     * @param estadio el recurso con los datos que proporciona el cliente.
+     * @return contenedor con el objeto modificado o vacío si no encuentra el id.
+     */
+
+    public Optional<Estadio> modificarRecurso(Long id, Estadio estadio) {
+        Optional<Estadio> estadioBuscado = estadioRepository.findById(id);
+
+        if (estadioBuscado.isPresent()) {
+            Estadio estadioAModificar = estadioBuscado.get();
+            estadioAModificar.setNombre(estadio.getNombre());
+            estadioRepository.save(estadioAModificar);
+
+            return Optional.of(estadioAModificar);
+
+        } else {
+            return Optional.empty();
+        }
     }
 
 }

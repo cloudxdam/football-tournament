@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -75,4 +77,26 @@ public class PartidoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoPartido);
     }
 
+    /**
+     * Endpoint para modificar / actualizar un recurso existente en la base de datos
+     * con los nuevos datos proporcionados por el cliente.
+     * 
+     * @param id      el id proporcionadio para localizar el recurso en la base de
+     *                datos.
+     * @param partido recurso con los nuevos datos.
+     * @return respuesta con código HTTP 200 (ok) o 404 (not found) si el id no
+     *         existe.
+     */
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Partido> putObject(@PathVariable Long id, @RequestBody Partido partido) {
+        Optional<Partido> partidoActualizado = partidoService.modificarRecurso(id, partido);
+
+        if (partidoActualizado.isPresent()) {
+            return ResponseEntity.of(partidoActualizado);
+
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

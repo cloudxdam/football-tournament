@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.parser.Part;
 import org.springframework.stereotype.Service;
 
 import com.dam.api_torneo.Model.Partido;
@@ -53,4 +54,24 @@ public class PartidoService {
         return partidoRepository.save(partido);
     }
 
+    /**
+     * Modifica un recurso en la base de datos localizándolo por su id.
+     * 
+     * @param id      el id del recurso que el cliente quiere modificar.
+     * @param estadio el recurso con los datos que proporciona el cliente.
+     * @return contenedor con el objeto modificado o vacío si no encuentra el id.
+     */
+    public Optional<Partido> modificarRecurso(Long id, Partido partido) {
+        Optional<Partido> partidoBuscado = partidoRepository.findById(id);
+
+        if (partidoBuscado.isPresent()) {
+            Partido partidoAModificar = partidoBuscado.get();
+            partidoAModificar.setResultado(partido.getResultado());
+
+            return Optional.of(partidoAModificar);
+
+        } else {
+            return Optional.empty();
+        }
+    }
 }

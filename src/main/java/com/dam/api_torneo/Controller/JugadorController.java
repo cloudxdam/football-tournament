@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -73,6 +74,30 @@ public class JugadorController {
     public ResponseEntity<Jugador> postObject(@RequestBody Jugador jugador) {
         Jugador nuevoJugador = jugadorService.crearObjeto(jugador);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoJugador);
+    }
+
+    /**
+     * Endpoint para modificar / actualizar un recurso existente en la base de datos
+     * con los nuevos datos proporcionados por el cliente.
+     * 
+     * @param id      el id proporcionadio para localizar el recurso en la base de
+     *                datos.
+     * @param jugador recurso con los nuevos datos.
+     * @return respuesta con código HTTP 200 (ok) o 404 (not found) si el id no
+     *         existe.
+     */
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Jugador> putObject(@PathVariable Long id, @RequestBody Jugador jugador) {
+        Optional<Jugador> jugadorActualizado = jugadorService.modificarRecurso(id, jugador);
+
+        if (jugadorActualizado.isPresent()) {
+            return ResponseEntity.of(jugadorActualizado);
+
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
 }
