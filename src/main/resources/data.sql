@@ -33,14 +33,7 @@ INSERT INTO Jugador (nif, nombre, apellidos) VALUES ('16161616O', 'Joan', 'Garc√
 INSERT INTO Jugador (nif, nombre, apellidos) VALUES ('17171717P', 'Pau', 'Cubars√≠');
 
 
-INSERT INTO Partido (resultado, equipo_local_id, equipo_visitante_id, fecha) 
-VALUES ('3-1', 1, 2, '2025-12-14');
-
-INSERT INTO Partido (resultado, equipo_local_id, equipo_visitante_id, fecha) 
-VALUES ('0-0', 3, 4, '2025-12-14');
-
-INSERT INTO Partido (resultado, equipo_local_id, equipo_visitante_id, fecha) 
-VALUES ('1-2', 2, 3, '2025-12-14');
-
-INSERT INTO Partido (resultado, equipo_local_id, equipo_visitante_id, fecha) 
-VALUES ('5-0', 1, 4, '2025-12-14');
+INSERT INTO Partido (resultado) VALUES ('3-1');
+INSERT INTO Partido (resultado) VALUES ('0-0');
+INSERT INTO Partido (resultado) VALUES ('1-2');
+INSERT INTO Partido (resultado) VALUES ('5-0');
