@@ -69,17 +69,21 @@ public class JugadorController {
      * cuerpo de la petición del cliente.
      *
      * @param jugador el objeto recibido en el cuerpo de la petición
-     * @return respuesta con código HTTP 201 (creado) y el objeto creado o
-     * código de error 500 si el recurso no se puede guardar porque el nif ya
-     * existe en la base de datos
+     * @return respuesta con código HTTP 201 (creado) y el objeto creado o 409
+     * Conflict en caso de que ya exista el nif especificado en la base de
+     * datos.
      */
     @PostMapping
-
     public ResponseEntity<Jugador> postObject(@RequestBody Jugador jugador) {
 
-        Jugador nuevoJugador = jugadorService.crearRecurso(jugador);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoJugador);
+        Optional<Jugador> jugadorBuscado = jugadorService.crearRecurso(jugador);
 
+        if (jugadorBuscado.isPresent()) {
+            Jugador nuevoJugador = jugadorBuscado.get();
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoJugador);
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 
     /**

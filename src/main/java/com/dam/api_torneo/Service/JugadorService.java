@@ -49,13 +49,13 @@ public class JugadorService {
      * @return El objeto que es guardado en la base de datos con su id generado
      * automáticamente
      */
-    public Jugador crearRecurso(Jugador jugador) {
+    public Optional<Jugador> crearRecurso(Jugador jugador) {
 
         if (!jugadorRepository.existsByNif(jugador.getNif())) {
-            return jugadorRepository.save(jugador);
+            return Optional.of(jugadorRepository.save(jugador));
 
         } else {
-            throw new RuntimeException("Ya existe un recurso con ese atributo");
+            return Optional.empty();
         }
 
     }
