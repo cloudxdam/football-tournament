@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +49,7 @@ public class JugadorController {
      *
      * @param id - el id del recurso que queremos buscar
      * @return el Jugador al que corresponde el id proporcionado + código HTTP
-     * 200 (ok) o 404 (not found) si el id especificado no existe.
+     *         200 (ok) o 404 (not found) si el id especificado no existe.
      */
     // anotación de método para petición GET con variable (id)
     @GetMapping("/{id}")
@@ -70,8 +71,8 @@ public class JugadorController {
      *
      * @param jugador el objeto recibido en el cuerpo de la petición
      * @return respuesta con código HTTP 201 (creado) y el objeto creado o 409
-     * Conflict en caso de que ya exista el nif especificado en la base de
-     * datos.
+     *         Conflict en caso de que ya exista el nif especificado en la base de
+     *         datos.
      */
     @PostMapping
     public ResponseEntity<Jugador> postObject(@RequestBody Jugador jugador) {
@@ -92,11 +93,11 @@ public class JugadorController {
      * operación a la capa de servicio, que devuelve un contenedor y, según su
      * contenido responderá con un código HTTP u otro.
      *
-     * @param id el id proporcionadio para localizar el recurso en la base de
-     * datos.
+     * @param id      el id proporcionadio para localizar el recurso en la base de
+     *                datos.
      * @param jugador recurso con los nuevos datos.
      * @return respuesta con código HTTP 200 (ok) o 404 (not found) si el id no
-     * existe.
+     *         existe.
      */
     @PutMapping("/{id}")
     public ResponseEntity<Jugador> putObject(@PathVariable Long id, @RequestBody Jugador jugador) {
@@ -118,7 +119,7 @@ public class JugadorController {
      *
      * @param id el id del recurso a borrar
      * @return respuesta con código HTTP 204 (no content) Si se encontró el id y
-     * por tanto se borró el recurso. Si no, devolverá 404 (not found).
+     *         por tanto se borró el recurso. Si no, devolverá 404 (not found).
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Jugador> deleteObject(@PathVariable Long id) {
@@ -136,10 +137,10 @@ public class JugadorController {
     /**
      * Búsqueda compuesta. Realiza una búsqueda por parámetros.
      *
-     * @param nombre el nombre del jugador
+     * @param nombre    el nombre del jugador
      * @param apellidos apellidos del jugador
      * @return lista con los jugadores coincidentes encontrados o respuesta 204
-     * No Content.
+     *         No Content.
      */
     @GetMapping("/buscar")
     public ResponseEntity<List<Jugador>> getCompound(@RequestParam String nombre, @RequestParam String apellidos) {
@@ -151,6 +152,20 @@ public class JugadorController {
 
         } else {
             return ResponseEntity.noContent().build();
+        }
+    }
+
+    // modificación 2.1 operación en lote
+    @PostMapping("/lote")
+    public ResponseEntity<List<Jugador>> postBatch(@RequestBody List<Jugador> jugadores) {
+        // TODO puntos 3 y 4 y javadoc
+
+        try {
+            List<Jugador> jugadoresGuardados = jugadorService.saveAll(jugadores);
+            return ResponseEntity.status(HttpStatus.CREATED).body(jugadoresGuardados);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
     }

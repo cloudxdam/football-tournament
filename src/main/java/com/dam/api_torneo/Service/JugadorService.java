@@ -1,13 +1,19 @@
 package com.dam.api_torneo.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.management.RuntimeErrorException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.dam.api_torneo.Model.Jugador;
 import com.dam.api_torneo.Repository.JugadorRepository;
+
+import jakarta.transaction.Transactional;
 
 /**
  * Capa de Servicio (@Service): Contiene la lógica de negocio de la aplicación.
@@ -45,9 +51,9 @@ public class JugadorService {
      * anteriormente.
      *
      * @param jugador el objeto que contiene los datos del cliente y que será
-     * guardado
+     *                guardado
      * @return El objeto que es guardado en la base de datos con su id generado
-     * automáticamente
+     *         automáticamente
      */
     public Optional<Jugador> crearRecurso(Jugador jugador) {
 
@@ -63,10 +69,10 @@ public class JugadorService {
     /**
      * Modifica un recurso en la base de datos localizándolo por su id.
      *
-     * @param id el id del recurso que el cliente quiere modificar.
+     * @param id      el id del recurso que el cliente quiere modificar.
      * @param estadio el recurso con los datos que proporciona el cliente.
      * @return contenedor con el objeto modificado o vacío si no encuentra el
-     * id.
+     *         id.
      */
     public Optional<Jugador> modificarRecurso(Long id, Jugador jugador) {
 
@@ -114,7 +120,28 @@ public class JugadorService {
     public List<Jugador> buscarConParametros(String nombre, String apellidos) {
 
         return jugadorRepository.findByNombreAndApellidos(nombre, apellidos);
+    }
 
+    // modificación 2.2
+    @Transactional
+    public List<Jugador> saveAll(List<Jugador> jugadores) {
+
+        List<Jugador> jugadoresGuardados = new ArrayList<>();
+
+        for (Jugador jugador : jugadores) {
+
+            if (jugadorRepository.existsByNif(jugador.getNif())) {
+                throw new RuntimeException("ERROR: el NIF " + jugador.getNif() + " ya existe en la base de datos");
+            }
+
+            if (jugador.getNombre().equalsIgnoreCase("ERROR")) {
+                throw new RuntimeException("ERROR en la transacción: nombre " + jugador.getNombre() + " no permitido.");
+            }
+
+            jugadoresGuardados.add(jugadorRepository.save(jugador));
+        }
+
+        return jugadoresGuardados;
     }
 
 }
