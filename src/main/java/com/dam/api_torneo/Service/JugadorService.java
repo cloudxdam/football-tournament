@@ -3,13 +3,8 @@ package com.dam.api_torneo.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import javax.management.RuntimeErrorException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-
 import com.dam.api_torneo.Model.Jugador;
 import com.dam.api_torneo.Repository.JugadorRepository;
 
@@ -115,14 +110,30 @@ public class JugadorService {
     }
 
     /**
-     * Get Compuesto
+     * Realiza una búsqueda compuesta de jugadores basándose en la combiación de
+     * los atributos 'nombre' y 'apellidos'.
+     * 
+     * @param nombre    El nombre del jugador buscado.
+     * @param apellidos Apellidos del jugador buscado.
+     * @return Lista de jugadores que coincidan con los parámetros especificados.
      */
     public List<Jugador> buscarConParametros(String nombre, String apellidos) {
 
         return jugadorRepository.findByNombreAndApellidos(nombre, apellidos);
     }
 
-    // modificación 2.2
+    /**
+     * Guarda una lista de jugadores en la base de datos.
+     * Comprueba que los NIF no estén registrados anteriormente y que su nombre no
+     * sea
+     * 'ERROR'. En el caso de que alguna de esas validaciones falle, lanzará una
+     * excepción
+     * y hará un rollback (dará marcha atŕas y no guardará nada) gracias a la
+     * anotación @Transactional.
+     * 
+     * @param jugadores lista de jugadores a guardar en la base de datos.
+     * @return lista con los jugadores que sea han guardado.
+     */
     @Transactional
     public List<Jugador> saveAll(List<Jugador> jugadores) {
 
