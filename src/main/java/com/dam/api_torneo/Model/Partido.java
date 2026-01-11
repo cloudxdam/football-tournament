@@ -19,7 +19,7 @@ public class Partido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idPartido;
+    private Long id;
     private String resultado;
 
 }

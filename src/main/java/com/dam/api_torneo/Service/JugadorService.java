@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.dam.api_torneo.Model.Jugador;
+import com.dam.api_torneo.Repository.EquipoRepository;
 import com.dam.api_torneo.Repository.JugadorRepository;
 
 import jakarta.transaction.Transactional;
@@ -19,6 +20,9 @@ public class JugadorService {
 
     @Autowired
     JugadorRepository jugadorRepository;
+
+    @Autowired
+    EquipoRepository equipoRepository;
 
     /**
      * Obtiene y devuelve una lista con todos los jugadores.
@@ -51,21 +55,25 @@ public class JugadorService {
 
     /**
      * Crea un nuevo objeto en la base de datos, si el nif no se ha registrado
-     * anteriormente.
+     * anteriormente y si el id del equipo está en la base de datos.
      *
      * @param jugador el objeto que contiene los datos del cliente y que será
      *                guardado.
      * @return El objeto que es guardado en la base de datos con su id generado
-     *         automáticamente o RuntimeException si el NIF ya está registrado.
+     *         automáticamente o RuntimeException si el NIF ya está registrado o si
+     *         el Id del equipo no existe en la base de datos.
      */
     public Jugador crearRecurso(Jugador jugador) {
 
-        if (!jugadorRepository.existsByNif(jugador.getNif())) {
-            return jugadorRepository.save(jugador);
-
-        } else {
+        if (jugadorRepository.existsByNif(jugador.getNif())) {
             throw new RuntimeException("NIF Duplicado");
         }
+
+        if (!equipoRepository.existsById(jugador.getEquipo().getId())) {
+            throw new RuntimeException("el Id de equipo especificado no existe.");
+        }
+
+        return jugadorRepository.save(jugador);
 
     }
 

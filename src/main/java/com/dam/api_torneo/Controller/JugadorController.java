@@ -66,9 +66,8 @@ public class JugadorController {
      * cuerpo de la petición del cliente.
      *
      * @param jugador el objeto recibido en el cuerpo de la petición
-     * @return respuesta con código HTTP 201 (creado) y el objeto creado o 409
-     *         Conflict en caso de que ya exista el nif especificado en la base de
-     *         datos.
+     * @return posibles respuestas: HTTP 201 Creted, 409 Conflict en caso de que ya
+     *         exista el nif especificado en la base de datos o 400 Bad Request.
      */
     @PostMapping
     public ResponseEntity<Jugador> postObject(@RequestBody Jugador jugador) {
@@ -78,7 +77,13 @@ public class JugadorController {
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevoJugador);
 
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+
+            if (e.getMessage().equalsIgnoreCase("NIF Duplicado")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
         }
     }
 

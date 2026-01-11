@@ -25,7 +25,7 @@ public class Equipo {
     // anotación que indica la estrategia (mecanismo) de generación del Id a
     // JPA para que lo asigne automáticamente
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idEquipo;
+    private Long id;
     private String nombre;
 
 }

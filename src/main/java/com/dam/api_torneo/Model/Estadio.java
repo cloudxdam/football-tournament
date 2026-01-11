@@ -19,7 +19,7 @@ public class Estadio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idEstadio;
+    private Long id;
     private String nombre;
     private int aforo;
 
