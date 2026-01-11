@@ -33,12 +33,19 @@ public class EstadioService {
      * Busca un recurso por su id.
      * 
      * @param id el id que buscamos
-     * @return Optional, que contendrá si el recurso existe, si no estará vacío.
+     * @return el Estadio encontrado o RuntimeException si no lo encuentra.
      */
 
-    public Optional<Estadio> getRecursoPorId(Long id) {
+    public Estadio getRecursoPorId(Long id) {
 
-        return estadioRepository.findById(id);
+        Optional<Estadio> estadioBuscado = estadioRepository.findById(id);
+
+        if (estadioBuscado.isPresent()) {
+            return estadioBuscado.get();
+
+        } else {
+            throw new RuntimeException("No se ha encontrado el estadio con el Id especificado.");
+        }
     }
 
     /**
@@ -59,10 +66,10 @@ public class EstadioService {
      * 
      * @param id      el id del recurso que el cliente quiere modificar.
      * @param estadio el recurso con los datos que proporciona el cliente.
-     * @return contenedor con el objeto modificado o vacío si no encuentra el id.
+     * @return el objeto modificado o RuntimeExceptoion si no encuentra el id.
      */
 
-    public Optional<Estadio> modificarRecurso(Long id, Estadio estadio) {
+    public Estadio modificarRecurso(Long id, Estadio estadio) {
 
         Optional<Estadio> estadioBuscado = estadioRepository.findById(id);
 
@@ -71,33 +78,34 @@ public class EstadioService {
             estadioAModificar.setNombre(estadio.getNombre());
             estadioRepository.save(estadioAModificar);
 
-            return Optional.of(estadioAModificar);
+            return estadioAModificar;
 
         } else {
-            return Optional.empty();
+            throw new RuntimeException("No se ha encontrado el equipo con el Id especificado.");
         }
     }
 
     /**
      * Borra / Elimina un recurso de la base de datos. Primero busca si existe
-     * el id proporcionado por el cliente. En caso de que sí, procede a borrar el
-     * recurso y devuelve un contenedor con dicho recurso. En caso de que no,
-     * devuelve un contenedor vacío.
-     * 
+     * el id proporcionado por el cliente. En caso de que sí, procede a borrarlo. En
+     * caso de que no, lanzará una excepción.
+     *
      * @param id el id del recurso a borrar, proporcionado por el cliente.
-     * @return el recurso si se encontró o contenedor vacío.
+     * @return el recurso si se encontró o RuntimeException si no.
      */
-    public Optional<Estadio> borrarRecurso(Long id) {
+    public Estadio borrarRecurso(Long id) {
 
         Optional<Estadio> estadioBuscado = estadioRepository.findById(id);
 
         if (estadioBuscado.isPresent()) {
+            Estadio estadoABorrar = estadioBuscado.get();
+
             estadioRepository.deleteById(id);
 
-            return estadioBuscado;
+            return estadoABorrar;
 
         } else {
-            return Optional.empty();
+            throw new RuntimeException("No se ha encontrado el equipo con el Id especificado.");
         }
     }
 

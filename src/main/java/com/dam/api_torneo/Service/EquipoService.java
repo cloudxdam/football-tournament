@@ -2,10 +2,8 @@ package com.dam.api_torneo.Service;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.dam.api_torneo.Model.Equipo;
 import com.dam.api_torneo.Repository.EquipoRepository;
 
@@ -36,16 +34,21 @@ public class EquipoService {
 
     /**
      * Busca un recurso por su id llamando al método findByid.
-     * El método devuelve un objeto Optional, que es un contenedor que tendrá
-     * dentro si el recurso existe o si no, estando vacío en este caso y evitando
-     * así una excepción NullPointerException en el caso de que no exista.
      * 
      * @param id el id que buscamos
-     * @return Optional, que contendrá si el recurso existe, si no estará vacío.
+     * @return El equipo si el recurso existe, si no lanzará RuntimeException.
      */
 
-    public Optional<Equipo> getRecursoPorId(Long id) {
-        return equipoRepository.findById(id);
+    public Equipo getRecursoPorId(Long id) {
+
+        Optional<Equipo> equipoBuscado = equipoRepository.findById(id);
+
+        if (equipoBuscado.isPresent()) {
+            return equipoBuscado.get();
+
+        } else {
+            throw new RuntimeException("No se ha encontrado el equipo con el Id especificado.");
+        }
     }
 
     /**
@@ -63,37 +66,35 @@ public class EquipoService {
 
     /**
      * Modifica un recurso en la base de datos. Primero, lo localiza por su id.
-     * Si no lo encuentra, devuelve un contenedor vacío. Si lo encuenta, modifica
-     * el nombre del objeto encontrado por el nombre del objeto proporcionado por
-     * el cliente, lo guarda en la base de datos y devuelve un contenedor con el
-     * objeto modificado.
+     * Si lo encuenta, modifica el nombre del objeto encontrado por el nombre del
+     * objeto proporcionado por el cliente, lo guarda en la base de datos y devuelve
+     * el objeto modificado. Si no klo encuentra, lanza una excepción.
      * 
      * @param id     el id del recurso que el cliente quiere modificar.
      * @param equipo el recurso con los datos que proporciona el cliente.
-     * @return contenedor con el objeto modificado o vacío si no encuentra el id.
+     * @return el objeto modificado o RuntimeException si no lo encuentra.
      */
 
-    public Optional<Equipo> modificarRecurso(Long id, Equipo equipo) {
+    public Equipo modificarRecurso(Long id, Equipo equipo) {
 
         // primero buscamos el recurso que corresponde al id proporcionado por el
-        // cliente
+        // cliente y almacenamos lo que nos devuelve en un contenedor Optional.
         Optional<Equipo> equipoBuscado = equipoRepository.findById(id);
 
-        // si existe, obtenemos los datos del objeto al que corresponde el id
+        // si dentro del contenedor había algo, es que el objeto existe
         if (equipoBuscado.isPresent()) {
 
+            // Recuperamos entonces los datos del objeto al que corresponde el id
             Equipo equipoAModificar = equipoBuscado.get();
 
             // modificamos el nombre del objeto obtenido por el que proporcionó el cliente
             equipoAModificar.setNombre(equipo.getNombre());
 
-            // guardamos los datos en la base de datos
-            equipoRepository.save(equipoAModificar);
-
-            return Optional.of(equipoAModificar);
+            // guardamos los datos en la base de datos y devolvemos el objeto
+            return equipoRepository.save(equipoAModificar);
 
         } else {
-            return Optional.empty();
+            throw new RuntimeException("No se ha encontrado el equipo con el Id especificado.");
         }
     }
 
@@ -101,25 +102,26 @@ public class EquipoService {
      * Borra / Elimina un recurso de la base de datos. Primero busca si existe
      * el id proporcionado por el cliente. En caso de que sí, procede a borrar el
      * recurso y devuelve un contenedor con dicho recurso. En caso de que no,
-     * devuelve un contenedor vacío.
+     * lanza una excepción.
      * 
      * @param id el id del recurso a borrar, proporcionado por el cliente.
-     * @return el recurso si se encontró o contenedor vacío.
+     * @return el recurso si se encontró o RuntimeException.
      */
-    public Optional<Equipo> borrarRecurso(Long id) {
+    public Equipo borrarRecurso(Long id) {
 
         Optional<Equipo> equipoBuscado = equipoRepository.findById(id);
 
         // si el recurso existe, lo borra según el id proporcionado
         if (equipoBuscado.isPresent()) {
 
-            equipoRepository.deleteById(id);
+            Equipo equipoABorrar = equipoBuscado.get();
+            equipoRepository.delete(equipoABorrar);
 
-            return equipoBuscado;
+            return equipoABorrar;
 
-            // si no existe, devuelve un contenedor vacío.
+            // si no existe, lanza la excepción
         } else {
-            return Optional.empty();
+            throw new RuntimeException("No se ha encontrado el equipo con el Id especificado.");
         }
     }
 

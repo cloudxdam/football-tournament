@@ -1,8 +1,6 @@
 package com.dam.api_torneo.Controller;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.dam.api_torneo.Model.Equipo;
 import com.dam.api_torneo.Service.EquipoService;
 
@@ -54,7 +51,7 @@ public class EquipoController {
     }
 
     /**
-     * Endpoint para buscar un recurso por id
+     * Endpoint para buscar un recurso por id.
      * 
      * @param id - el id del recurso que queremos buscar
      * @return el Equipo al que corresponde el id proporcionado + código HTTP
@@ -65,13 +62,15 @@ public class EquipoController {
     // petición sea de tipo GET con una variable, que en este caso es un id
     @GetMapping("/{id}")
     public ResponseEntity<Equipo> getById(@PathVariable Long id) {
-        Optional<Equipo> equipo = equipoService.getRecursoPorId(id);
 
-        if (equipo.isPresent()) {
-            return ResponseEntity.of(equipo);
-        } else {
+        try {
+            Equipo equipoBuscado = equipoService.getRecursoPorId(id);
+            return ResponseEntity.ok(equipoBuscado);
+
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
+
     }
 
     /**
@@ -98,51 +97,48 @@ public class EquipoController {
     /**
      * Endpoint para modificar / actualizar un recurso existente en la base de datos
      * con los nuevos datos proporcionados por el cliente. Solicita la operación a
-     * la capa de servicio, que devuelve un contenedor y, según su contenido
-     * responderá con un código HTTP u otro.
+     * la capa de servicio y responderá con un código HTTP u otro dependiendo de si
+     * encuentra o no el recurso.
      * 
      * @param id     el id proporcionado para localizar el recurso en la base de
      *               datos.
      * @param equipo recurso con los nuevos datos.
      * @return respuesta con código HTTP 200 (ok) o 404 (not found) si el id no
-     *         existe.
+     *         se encuentra.
      */
 
     @PutMapping("/{id}")
     // indicamos con las anotaciones los datos que hay que recibir y procesar
+    // @PathVariable indica que en la url está la variable a tener en cuenta.
     public ResponseEntity<Equipo> putObject(@PathVariable Long id, @RequestBody Equipo equipo) {
 
-        Optional<Equipo> equipoActualizado = equipoService.modificarRecurso(id, equipo);
+        try {
+            Equipo equipoActualizado = equipoService.modificarRecurso(id, equipo);
+            return ResponseEntity.ok(equipoActualizado);
 
-        if (equipoActualizado.isPresent()) {
-            return ResponseEntity.of(equipoActualizado);
-
-        } else {
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     /**
      * Endpoint para borrar un recurso de la base de datos según el id especificado
-     * por el cliente. Solicita el borrado a la capa de servicio, que devuelve un
-     * contenedor y, según su contenido, proporcionará una respuesta con un código
-     * HTTP
-     * u otro.
+     * por el cliente. Solicita el borrado a la capa de servicio y, según su
+     * resultado, proporciona una respuesta con un código HTTP u otro.
      * 
      * @param id el id del recurso a borrar
-     * @return respuesta con código HTTP 204 (no content) Si se encontró el id y
+     * @return respuesta con código HTTP 204 (no content) si se encontró el id y
      *         por tanto se borró el recurso. Si no, devolverá 404 (not found).
      */
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Equipo> deleteObject(@PathVariable Long id) {
 
-        Optional<Equipo> equipoBorrado = equipoService.borrarRecurso(id);
-
-        if (equipoBorrado.isPresent()) {
+        try {
+            equipoService.borrarRecurso(id);
             return ResponseEntity.noContent().build();
 
-        } else {
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }

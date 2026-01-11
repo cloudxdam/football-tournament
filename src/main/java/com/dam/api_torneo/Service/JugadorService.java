@@ -44,7 +44,7 @@ public class JugadorService {
             return jugadorBuscado.get();
 
         } else {
-            throw new RuntimeException("Jugador no encontrado");
+            throw new RuntimeException("No se ha encontrado el jugador con el Id especificado.");
         }
 
     }
@@ -90,7 +90,7 @@ public class JugadorService {
             return jugadorRepository.save(jugadorAModificar);
 
         } else {
-            throw new RuntimeException("Jugador no encontrado.");
+            throw new RuntimeException("No se ha encontrado el jugador con el Id especificado.");
         }
     }
 
@@ -113,7 +113,7 @@ public class JugadorService {
             return jugadorABorrar;
 
         } else {
-            throw new RuntimeException("Jugador no encontrado.");
+            throw new RuntimeException("No se ha encontrado el jugador con el Id especificado.");
         }
     }
 

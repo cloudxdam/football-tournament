@@ -2,10 +2,8 @@ package com.dam.api_torneo.Service;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.dam.api_torneo.Model.Partido;
 import com.dam.api_torneo.Repository.PartidoRepository;
 
@@ -34,13 +32,20 @@ public class PartidoService {
     /**
      * Busca un recurso por su id.
      * 
-     * @param id el id que buscamos
-     * @return Optional, que contendrá si el recurso existe, si no estará vacío.
+     * @param id el id que buscamos.
+     * @return El recurso si existe, si no lanza RuntimeException.
      */
 
-    public Optional<Partido> getRecursoPorId(Long id) {
+    public Partido getRecursoPorId(Long id) {
 
-        return partidoRepository.findById(id);
+        Optional<Partido> partidoBuscado = partidoRepository.findById(id);
+
+        if (partidoBuscado.isPresent()) {
+            return partidoBuscado.get();
+
+        } else {
+            throw new RuntimeException("No se ha encontrado el estadio con el Id especificado.");
+        }
     }
 
     /**
@@ -61,9 +66,9 @@ public class PartidoService {
      * 
      * @param id      el id del recurso que el cliente quiere modificar.
      * @param estadio el recurso con los datos que proporciona el cliente.
-     * @return contenedor con el objeto modificado o vacío si no encuentra el id.
+     * @return el objeto modificado o RuntimeException no encuentra el id.
      */
-    public Optional<Partido> modificarRecurso(Long id, Partido partido) {
+    public Partido modificarRecurso(Long id, Partido partido) {
 
         Optional<Partido> partidoBuscado = partidoRepository.findById(id);
 
@@ -71,33 +76,33 @@ public class PartidoService {
             Partido partidoAModificar = partidoBuscado.get();
             partidoAModificar.setResultado(partido.getResultado());
 
-            return Optional.of(partidoAModificar);
+            return partidoRepository.save(partidoAModificar);
 
         } else {
-            return Optional.empty();
+            throw new RuntimeException("No se ha encontrado el estadio con el Id especificado.");
         }
     }
 
     /**
      * Borra / Elimina un recurso de la base de datos. Primero busca si existe
-     * el id proporcionado por el cliente. En caso de que sí, procede a borrar el
-     * recurso y devuelve un contenedor con dicho recurso. En caso de que no,
-     * devuelve un contenedor vacío.
+     * por el id proporcionado por el cliente. En caso de que sí, borrar el
+     * recurso. En caso de que no, lanzará una excepción.
      * 
      * @param id el id del recurso a borrar, proporcionado por el cliente.
-     * @return el recurso si se encontró o contenedor vacío.
+     * @return el recurso si se encontró o RuntimeException.
      */
-    public Optional<Partido> borrarRecurso(Long id) {
+    public Partido borrarRecurso(Long id) {
 
         Optional<Partido> partidoBuscado = partidoRepository.findById(id);
 
         if (partidoBuscado.isPresent()) {
+            Partido partidoABorrar = partidoBuscado.get();
             partidoRepository.deleteById(id);
 
-            return partidoBuscado;
+            return partidoABorrar;
 
         } else {
-            return Optional.empty();
+            throw new RuntimeException("No se ha encontrado el estadio con el Id especificado.");
         }
     }
 

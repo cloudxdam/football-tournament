@@ -1,8 +1,6 @@
 package com.dam.api_torneo.Controller;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.dam.api_torneo.Model.Partido;
 import com.dam.api_torneo.Service.PartidoService;
 
@@ -44,9 +41,9 @@ public class PartidoController {
     }
 
     /**
-     * endpoint para buscar un recurso por id
+     * Endpoint para buscar un recurso por id.
      * 
-     * @param id - el id del recurso que queremos buscar
+     * @param id - el id del recurso que queremos buscar.
      * @return el Partido al que corresponde el id proporcionado + código HTTP
      *         200 (ok) o 404 (not found) si el id especificado no existe.
      */
@@ -55,12 +52,11 @@ public class PartidoController {
     @GetMapping("/{id}")
     public ResponseEntity<Partido> getById(@PathVariable Long id) {
 
-        Optional<Partido> partido = partidoService.getRecursoPorId(id);
+        try {
+            Partido partidoBuscado = partidoService.getRecursoPorId(id);
+            return ResponseEntity.ok(partidoBuscado);
 
-        if (partido.isPresent()) {
-            return ResponseEntity.of(partido);
-
-        } else {
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -96,22 +92,20 @@ public class PartidoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Partido> putObject(@PathVariable Long id, @RequestBody Partido partido) {
-        Optional<Partido> partidoActualizado = partidoService.modificarRecurso(id, partido);
 
-        if (partidoActualizado.isPresent()) {
-            return ResponseEntity.of(partidoActualizado);
+        try {
+            Partido partidoActualizado = partidoService.modificarRecurso(id, partido);
+            return ResponseEntity.ok(partidoActualizado);
 
-        } else {
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     /**
      * Endpoint para borrar un recurso de la base de datos según el id especificado
-     * por el cliente. Solicita el borrado a la capa de servicio, que devuelve un
-     * contenedor y, según su contenido, proporcionará una respuesta con un código
-     * HTTP
-     * u otro.
+     * por el cliente. Solicita el borrado a la capa de servicio y, según su
+     * resultado, proporcionará una respuesta con un código HTTP u otro.
      * 
      * @param id el id del recurso a borrar
      * @return respuesta con código HTTP 204 (no content) Si se encontró el id y
@@ -121,12 +115,11 @@ public class PartidoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Partido> deleteObject(@PathVariable Long id) {
 
-        Optional<Partido> partidoBorrado = partidoService.borrarRecurso(id);
-
-        if (partidoBorrado.isPresent()) {
+        try {
+            partidoService.borrarRecurso(id);
             return ResponseEntity.noContent().build();
 
-        } else {
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }

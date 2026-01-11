@@ -1,8 +1,6 @@
 package com.dam.api_torneo.Controller;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.dam.api_torneo.Model.Estadio;
 import com.dam.api_torneo.Service.EstadioService;
 
@@ -57,12 +54,11 @@ public class EstadioController {
     @GetMapping("/{id}")
     public ResponseEntity<Estadio> getById(@PathVariable Long id) {
 
-        Optional<Estadio> estadio = estadioService.getRecursoPorId(id);
+        try {
+            Estadio estadioBuscado = estadioService.getRecursoPorId(id);
+            return ResponseEntity.ok(estadioBuscado);
 
-        if (estadio.isPresent()) {
-            return ResponseEntity.of(estadio);
-
-        } else {
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -86,8 +82,8 @@ public class EstadioController {
     /**
      * Endpoint para modificar / actualizar un recurso existente en la base de datos
      * con los nuevos datos proporcionados por el cliente. Solicita la operación a
-     * la capa de servicio, que devuelve un contenedor y, según su contenido
-     * responderá con un código HTTP u otro.
+     * la capa de servicio y devuelve un código HTTP u otro dependiendo del
+     * resultado.
      * 
      * @param id      el id proporcionadio para localizar el recurso en la base de
      *                datos.
@@ -100,22 +96,19 @@ public class EstadioController {
     // indicamos con las anotaciones los datos que hay que recibir y procesar
     public ResponseEntity<Estadio> putObject(@PathVariable Long id, @RequestBody Estadio estadio) {
 
-        Optional<Estadio> estadioActualizado = estadioService.modificarRecurso(id, estadio);
+        try {
+            Estadio estadioActualizado = estadioService.modificarRecurso(id, estadio);
+            return ResponseEntity.ok(estadioActualizado);
 
-        if (estadioActualizado.isPresent()) {
-            return ResponseEntity.of(estadioActualizado);
-
-        } else {
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     /**
      * Endpoint para borrar un recurso de la base de datos según el id especificado
-     * por el cliente. Solicita el borrado a la capa de servicio, que devuelve un
-     * contenedor y, según su contenido, proporcionará una respuesta con un código
-     * HTTP
-     * u otro.
+     * por el cliente. Solicita el borrado a la capa de servicio y proporciona una
+     * respuesta con un código HTTP u otro dependiendo del resultado.
      * 
      * @param id el id del recurso a borrar
      * @return respuesta con código HTTP 204 (no content) Si se encontró el id y
@@ -125,12 +118,11 @@ public class EstadioController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Estadio> deleteObject(@PathVariable Long id) {
 
-        Optional<Estadio> estadioBorrado = estadioService.borrarRecurso(id);
-
-        if (estadioBorrado.isPresent()) {
+        try {
+            estadioService.borrarRecurso(id);
             return ResponseEntity.noContent().build();
 
-        } else {
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }

@@ -1,7 +1,6 @@
 package com.dam.api_torneo.Controller;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,8 +53,8 @@ public class JugadorController {
     public ResponseEntity<Jugador> getById(@PathVariable Long id) {
 
         try {
-            Jugador jugador = jugadorService.getRecursoPorId(id);
-            return ResponseEntity.ok(jugador);
+            Jugador jugadorBuscado = jugadorService.getRecursoPorId(id);
+            return ResponseEntity.ok(jugadorBuscado);
 
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -100,9 +99,9 @@ public class JugadorController {
 
         try {
 
-            Jugador jugadorActualizar = jugadorService.modificarRecurso(id, jugador);
+            Jugador jugadorActualizado = jugadorService.modificarRecurso(id, jugador);
             jugadorService.modificarRecurso(id, jugador);
-            return ResponseEntity.ok(jugadorActualizar);
+            return ResponseEntity.ok(jugadorActualizado);
 
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
