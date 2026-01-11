@@ -33,12 +33,20 @@ public class JugadorService {
     /**
      * Busca un recurso por su id.
      *
-     * @param id el id que buscamos
-     * @return Optional, que contendrá si el recurso existe, si no estará vacío.
+     * @param id el id que buscamos.
+     * @return El jugador buscado o RuntimeException si no se encuentra.
      */
-    public Optional<Jugador> getRecursoPorId(Long id) {
+    public Jugador getRecursoPorId(Long id) {
 
-        return jugadorRepository.findById(id);
+        Optional<Jugador> jugadorBuscado = jugadorRepository.findById(id);
+
+        if (jugadorBuscado.isPresent()) {
+            return jugadorBuscado.get();
+
+        } else {
+            throw new RuntimeException("Jugador no encontrado");
+        }
+
     }
 
     /**
@@ -46,17 +54,17 @@ public class JugadorService {
      * anteriormente.
      *
      * @param jugador el objeto que contiene los datos del cliente y que será
-     *                guardado
+     *                guardado.
      * @return El objeto que es guardado en la base de datos con su id generado
-     *         automáticamente
+     *         automáticamente o RuntimeException si el NIF ya está registrado.
      */
-    public Optional<Jugador> crearRecurso(Jugador jugador) {
+    public Jugador crearRecurso(Jugador jugador) {
 
         if (!jugadorRepository.existsByNif(jugador.getNif())) {
-            return Optional.of(jugadorRepository.save(jugador));
+            return jugadorRepository.save(jugador);
 
         } else {
-            return Optional.empty();
+            throw new RuntimeException("NIF Duplicado");
         }
 
     }
@@ -65,47 +73,47 @@ public class JugadorService {
      * Modifica un recurso en la base de datos localizándolo por su id.
      *
      * @param id      el id del recurso que el cliente quiere modificar.
-     * @param estadio el recurso con los datos que proporciona el cliente.
-     * @return contenedor con el objeto modificado o vacío si no encuentra el
-     *         id.
+     * @param jugador el recurso con los datos que proporciona el cliente.
+     * @return el objeto modificado o RuntimeExceptoion si no encuentra el id.
      */
-    public Optional<Jugador> modificarRecurso(Long id, Jugador jugador) {
+    public Jugador modificarRecurso(Long id, Jugador jugador) {
 
         Optional<Jugador> jugadorBuscado = jugadorRepository.findById(id);
 
         if (jugadorBuscado.isPresent()) {
+
             Jugador jugadorAModificar = jugadorBuscado.get();
             jugadorAModificar.setNif(jugador.getNif());
             jugadorAModificar.setNombre(jugador.getNombre());
             jugadorAModificar.setApellidos(jugador.getApellidos());
 
-            return Optional.of(jugadorAModificar);
+            return jugadorRepository.save(jugadorAModificar);
 
         } else {
-            return Optional.empty();
+            throw new RuntimeException("Jugador no encontrado.");
         }
     }
 
     /**
      * Borra / Elimina un recurso de la base de datos. Primero busca si existe
-     * el id proporcionado por el cliente. En caso de que sí, procede a borrar
-     * el recurso y devuelve un contenedor con dicho recurso. En caso de que no,
-     * devuelve un contenedor vacío.
+     * el id proporcionado por el cliente. En caso de que sí, procede a borrarlo. En
+     * caso de que no, lanzará una excepción.
      *
      * @param id el id del recurso a borrar, proporcionado por el cliente.
-     * @return el recurso si se encontró o contenedor vacío.
+     * @return el recurso si se encontró o RuntimeException si no.
      */
-    public Optional<Jugador> borrarRecurso(Long id) {
+    public Jugador borrarRecurso(Long id) {
 
         Optional<Jugador> jugadorBuscado = jugadorRepository.findById(id);
 
         if (jugadorBuscado.isPresent()) {
+            Jugador jugadorABorrar = jugadorBuscado.get();
             jugadorRepository.deleteById(id);
 
-            return jugadorBuscado;
+            return jugadorABorrar;
 
         } else {
-            return Optional.empty();
+            throw new RuntimeException("Jugador no encontrado.");
         }
     }
 

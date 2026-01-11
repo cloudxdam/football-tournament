@@ -43,9 +43,9 @@ public class JugadorController {
     }
 
     /**
-     * endpoint para buscar un recurso por id
+     * Endpoint para buscar un recurso por id
      *
-     * @param id - el id del recurso que queremos buscar
+     * @param id - el id del jugador que queremos buscar
      * @return el Jugador al que corresponde el id proporcionado + código HTTP
      *         200 (ok) o 404 (not found) si el id especificado no existe.
      */
@@ -53,18 +53,17 @@ public class JugadorController {
     @GetMapping("/{id}")
     public ResponseEntity<Jugador> getById(@PathVariable Long id) {
 
-        Optional<Jugador> jugador = jugadorService.getRecursoPorId(id);
+        try {
+            Jugador jugador = jugadorService.getRecursoPorId(id);
+            return ResponseEntity.ok(jugador);
 
-        if (jugador.isPresent()) {
-            return ResponseEntity.of(jugador);
-
-        } else {
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     /**
-     * endpoint que crea un nuevo recurso a partir de los datos enviados en el
+     * Endpoint que crea un nuevo recurso a partir de los datos enviados en el
      * cuerpo de la petición del cliente.
      *
      * @param jugador el objeto recibido en el cuerpo de la petición
@@ -75,12 +74,11 @@ public class JugadorController {
     @PostMapping
     public ResponseEntity<Jugador> postObject(@RequestBody Jugador jugador) {
 
-        Optional<Jugador> jugadorBuscado = jugadorService.crearRecurso(jugador);
-
-        if (jugadorBuscado.isPresent()) {
-            Jugador nuevoJugador = jugadorBuscado.get();
+        try {
+            Jugador nuevoJugador = jugadorService.crearRecurso(jugador);
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevoJugador);
-        } else {
+
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
@@ -88,8 +86,8 @@ public class JugadorController {
     /**
      * Endpoint para modificar / actualizar un recurso existente en la base de
      * datos con los nuevos datos proporcionados por el cliente. Solicita la
-     * operación a la capa de servicio, que devuelve un contenedor y, según su
-     * contenido responderá con un código HTTP u otro.
+     * operación a la capa de servicio que dependiendo de si encuentra o no el id
+     * responderá con código HTTP ok o no encontrado.
      *
      * @param id      el id proporcionadio para localizar el recurso en la base de
      *                datos.
@@ -99,21 +97,24 @@ public class JugadorController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<Jugador> putObject(@PathVariable Long id, @RequestBody Jugador jugador) {
-        Optional<Jugador> jugadorActualizado = jugadorService.modificarRecurso(id, jugador);
 
-        if (jugadorActualizado.isPresent()) {
-            return ResponseEntity.of(jugadorActualizado);
+        try {
 
-        } else {
+            Jugador jugadorActualizar = jugadorService.modificarRecurso(id, jugador);
+            jugadorService.modificarRecurso(id, jugador);
+            return ResponseEntity.ok(jugadorActualizar);
+
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
+
     }
 
     /**
      * Endpoint para borrar un recurso de la base de datos según el id
-     * especificado por el cliente. Solicita el borrado a la capa de servicio,
-     * que devuelve un contenedor y, según su contenido, proporcionará una
-     * respuesta con un código HTTP u otro.
+     * especificado por el cliente. Solicita el borrado a la capa de servicio
+     * proporcionará una respuesta con un código HTTP u otro dependiendo de si
+     * se encuentra o no su id en la base de datos.
      *
      * @param id el id del recurso a borrar
      * @return respuesta con código HTTP 204 (no content) Si se encontró el id y
@@ -122,14 +123,14 @@ public class JugadorController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Jugador> deleteObject(@PathVariable Long id) {
 
-        Optional<Jugador> jugadorBorrado = jugadorService.borrarRecurso(id);
-
-        if (jugadorBorrado.isPresent()) {
+        try {
+            jugadorService.borrarRecurso(id);
             return ResponseEntity.noContent().build();
 
-        } else {
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
+
     }
 
     /**
@@ -148,7 +149,7 @@ public class JugadorController {
         List<Jugador> jugadoresEncontrados = jugadorService.buscarConParametros(nombre, apellidos);
 
         if (!jugadoresEncontrados.isEmpty()) {
-            return ResponseEntity.ok(jugadorService.buscarConParametros(nombre, apellidos));
+            return ResponseEntity.ok(jugadoresEncontrados);
 
         } else {
             return ResponseEntity.noContent().build();
