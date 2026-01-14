@@ -56,9 +56,9 @@ public class JugadorService {
      * anteriormente.
      *
      * @param jugador el objeto que contiene los datos del cliente y que será
-     *                guardado.
+     * guardado.
      * @return El objeto que es guardado en la base de datos con su id generado
-     *         automáticamente o RuntimeException si el NIF ya está registrado.
+     * automáticamente o RuntimeException si el NIF ya está registrado.
      */
     public Jugador crearRecurso(Jugador jugador) {
 
@@ -74,7 +74,7 @@ public class JugadorService {
     /**
      * Modifica un recurso en la base de datos localizándolo por su id.
      *
-     * @param id      el id del recurso que el cliente quiere modificar.
+     * @param id el id del recurso que el cliente quiere modificar.
      * @param jugador el recurso con los datos que proporciona el cliente.
      * @return el objeto modificado o RuntimeExceptoion si no encuentra el id.
      */
@@ -98,8 +98,8 @@ public class JugadorService {
 
     /**
      * Borra / Elimina un recurso de la base de datos. Primero busca si existe
-     * el id proporcionado por el cliente. En caso de que sí, procede a borrarlo. En
-     * caso de que no, lanzará una excepción.
+     * el id proporcionado por el cliente. En caso de que sí, procede a
+     * borrarlo. En caso de que no, lanzará una excepción.
      *
      * @param id el id del recurso a borrar, proporcionado por el cliente.
      * @return el recurso si se encontró o RuntimeException si no.
@@ -122,10 +122,11 @@ public class JugadorService {
     /**
      * Realiza una búsqueda compuesta de jugadores basándose en la combiación de
      * los atributos 'nombre' y 'apellidos'.
-     * 
-     * @param nombre    El nombre del jugador buscado.
+     *
+     * @param nombre El nombre del jugador buscado.
      * @param apellidos Apellidos del jugador buscado.
-     * @return Lista de jugadores que coincidan con los parámetros especificados.
+     * @return Lista de jugadores que coincidan con los parámetros
+     * especificados.
      */
     public List<Jugador> buscarConParametros(String nombre, String apellidos) {
 
@@ -133,14 +134,12 @@ public class JugadorService {
     }
 
     /**
-     * Guarda una lista de jugadores en la base de datos.
-     * Comprueba que los NIF no estén registrados anteriormente y que su nombre no
-     * sea
-     * 'ERROR'. En el caso de que alguna de esas validaciones falle, lanzará una
-     * excepción
-     * y hará un rollback (dará marcha atŕas y no guardará nada) gracias a la
+     * Guarda una lista de jugadores en la base de datos. Comprueba que los NIF
+     * no estén registrados anteriormente y que su nombre no sea 'ERROR'. En el
+     * caso de que alguna de esas validaciones falle, lanzará una excepción y
+     * hará un rollback (dará marcha atŕas y no guardará nada) gracias a la
      * anotación @Transactional.
-     * 
+     *
      * @param jugadores lista de jugadores a guardar en la base de datos.
      * @return lista con los jugadores que sea han guardado.
      */
@@ -166,11 +165,15 @@ public class JugadorService {
     }
 
     /**
-     * Realizar una actualización / modificación parcial del recurso
+     * Realizar una actualización / modificación parcial del recurso. Gracias a
+     * Transactional, si el nif introducido está duplicado, no se guardará
+     * ninguno de los cambios.
+     *
      * @param id id del Jugador
      * @param jugador Objeto jugador que "trae" las modificaciones a realizar
-     * @return 
+     * @return
      */
+    @Transactional
     public Jugador parchearRecurso(Long id, Jugador jugador) {
 
         Optional<Jugador> jugadorBuscado = jugadorRepository.findById(id);
@@ -181,7 +184,7 @@ public class JugadorService {
 
             if (jugador.getNif() != null) {
                 if (jugadorRepository.existsByNif(jugador.getNif())) {
-                    throw new RuntimeException("NIF Duplicado");
+                    throw new RuntimeException("Error en la transacción. El NIF especificado ya existe en la base de datos.");
                 }
                 jugadorEncontrado.setNif(jugador.getNif());
             }
@@ -201,6 +204,5 @@ public class JugadorService {
         }
 
     }
-
 
 }

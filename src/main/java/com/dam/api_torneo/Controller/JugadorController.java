@@ -189,9 +189,8 @@ public class JugadorController {
             return ResponseEntity.ok(jugadorParcheado);
 
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
     }
-
 
 }
