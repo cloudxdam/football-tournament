@@ -3,8 +3,10 @@ package com.dam.api_torneo.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.dam.api_torneo.Model.Jugador;
 import com.dam.api_torneo.Repository.JugadorRepository;
 
@@ -162,5 +164,43 @@ public class JugadorService {
 
         return jugadoresGuardados;
     }
+
+    /**
+     * Realizar una actualización / modificación parcial del recurso
+     * @param id id del Jugador
+     * @param jugador Objeto jugador que "trae" las modificaciones a realizar
+     * @return 
+     */
+    public Jugador parchearRecurso(Long id, Jugador jugador) {
+
+        Optional<Jugador> jugadorBuscado = jugadorRepository.findById(id);
+
+        if (jugadorBuscado.isPresent()) {
+
+            Jugador jugadorEncontrado = jugadorBuscado.get();
+
+            if (jugador.getNif() != null) {
+                if (jugadorRepository.existsByNif(jugador.getNif())) {
+                    throw new RuntimeException("NIF Duplicado");
+                }
+                jugadorEncontrado.setNif(jugador.getNif());
+            }
+
+            if (jugador.getNombre() != null) {
+                jugadorEncontrado.setNombre(jugador.getNombre());
+            }
+
+            if (jugador.getApellidos() != null) {
+                jugadorEncontrado.setApellidos(jugador.getApellidos());
+            }
+
+            return jugadorRepository.save(jugadorEncontrado);
+
+        } else {
+            throw new RuntimeException("No se ha encontrado el jugador con el Id especificado.");
+        }
+
+    }
+
 
 }

@@ -13,4 +13,7 @@ public interface JugadorRepository extends JpaRepository<Jugador, Long> {
 
     // consulta si existe el nif especificado
     boolean existsByNif(String nif);
+
+    // mod 1.1
+    int countByEquipoIdEquipo(Long idEquipo);
 }

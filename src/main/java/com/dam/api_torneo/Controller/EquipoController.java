@@ -1,6 +1,7 @@
 package com.dam.api_torneo.Controller;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,19 +13,19 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.dam.api_torneo.Model.Equipo;
 import com.dam.api_torneo.Service.EquipoService;
 
 /**
- * La clase EquipoController es el controlador RESTful.
- * Actúa como puerta de entrada a la API. Expone los endpoints (las URLs) y
- * gestiona las peticiones y respuestas HTTP. Es decir, declara la dirección web
- * específica a la que los clientes externos pueden enviar las peticiones para
- * interactuar con la lógica de negocio. En este caso, la lógica de negocio se
- * delega a la capa de servicio.
- * 
+ * La clase EquipoController es el controlador RESTful. Actúa como puerta de
+ * entrada a la API. Expone los endpoints (las URLs) y gestiona las peticiones y
+ * respuestas HTTP. Es decir, declara la dirección web específica a la que los
+ * clientes externos pueden enviar las peticiones para interactuar con la lógica
+ * de negocio. En este caso, la lógica de negocio se delega a la capa de
+ * servicio.
+ *
  */
-
 // marcamos la clase como controlador RESTful
 @RestController
 // indicamos a Spring que todos los endpoints definidos en esta clase deben
@@ -37,13 +38,11 @@ public class EquipoController {
     private EquipoService equipoService;
 
     /**
-     * Endpoint que gestiona las peticiones GET llamando al método correspondiente
-     * del
-     * servicio.
-     * 
+     * Endpoint que gestiona las peticiones GET llamando al método
+     * correspondiente del servicio.
+     *
      * @return la lista de todos los equipos.
      */
-
     // marcamos así el método para que se ejecute cuando la petición sea de tipo GET
     @GetMapping
     public List<Equipo> getAll() {
@@ -52,12 +51,11 @@ public class EquipoController {
 
     /**
      * Endpoint para buscar un recurso por id.
-     * 
+     *
      * @param id - el id del recurso que queremos buscar
      * @return el Equipo al que corresponde el id proporcionado + código HTTP
-     *         200 (ok) o 404 (not found) si el id especificado no existe.
+     * 200 (ok) o 404 (not found) si el id especificado no existe.
      */
-
     // indicamos con esta anotación que este método debe ejecutarse cuando la
     // petición sea de tipo GET con una variable, que en este caso es un id
     @GetMapping("/{id}")
@@ -76,11 +74,10 @@ public class EquipoController {
     /**
      * Endpoint que crea un nuevo recurso a partir de los datos enviados en el
      * cuerpo de la petición del cliente.
-     * 
+     *
      * @param equipo el objeto recibido en el cuerpo de la petición
      * @return respuesta con código HTTP 201 (creado) y el objeto creado.
      */
-
     // indicamos que este método debe ejecutarse cuando la petición sea de tipo POST
     @PostMapping
     // indicamos con @RequestBody que en la petición del cliente vienen datos que
@@ -95,18 +92,17 @@ public class EquipoController {
     }
 
     /**
-     * Endpoint para modificar / actualizar un recurso existente en la base de datos
-     * con los nuevos datos proporcionados por el cliente. Solicita la operación a
-     * la capa de servicio y responderá con un código HTTP u otro dependiendo de si
-     * encuentra o no el recurso.
-     * 
-     * @param id     el id proporcionado para localizar el recurso en la base de
-     *               datos.
+     * Endpoint para modificar / actualizar un recurso existente en la base de
+     * datos con los nuevos datos proporcionados por el cliente. Solicita la
+     * operación a la capa de servicio y responderá con un código HTTP u otro
+     * dependiendo de si encuentra o no el recurso.
+     *
+     * @param id el id proporcionado para localizar el recurso en la base de
+     * datos.
      * @param equipo recurso con los nuevos datos.
      * @return respuesta con código HTTP 200 (ok) o 404 (not found) si el id no
-     *         se encuentra.
+     * se encuentra.
      */
-
     @PutMapping("/{id}")
     // indicamos con las anotaciones los datos que hay que recibir y procesar
     // @PathVariable indica que en la url está la variable a tener en cuenta.
@@ -122,15 +118,14 @@ public class EquipoController {
     }
 
     /**
-     * Endpoint para borrar un recurso de la base de datos según el id especificado
-     * por el cliente. Solicita el borrado a la capa de servicio y, según su
-     * resultado, proporciona una respuesta con un código HTTP u otro.
-     * 
+     * Endpoint para borrar un recurso de la base de datos según el id
+     * especificado por el cliente. Solicita el borrado a la capa de servicio y,
+     * según su resultado, proporciona una respuesta con un código HTTP u otro.
+     *
      * @param id el id del recurso a borrar
      * @return respuesta con código HTTP 204 (no content) si se encontró el id y
-     *         por tanto se borró el recurso. Si no, devolverá 404 (not found).
+     * por tanto se borró el recurso. Si no, devolverá 404 (not found).
      */
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Equipo> deleteObject(@PathVariable Long id) {
 
@@ -141,6 +136,15 @@ public class EquipoController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    // conteo detalles
+    @GetMapping("/{id}/conteo-jugadores")
+    public String contar(@PathVariable Long id) {
+
+        int total = equipoService.contarJugadores(id);
+
+        return "Total de jugadores: " + total;
     }
 
 }
