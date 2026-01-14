@@ -1,6 +1,8 @@
 package com.dam.api_torneo.Controller;
 
+import java.time.LocalDate;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,16 +13,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.dam.api_torneo.Model.Partido;
 import com.dam.api_torneo.Service.PartidoService;
 
 /**
- * Controlador RESTful.
- * Actúa como puerta de entrada a la API. Expone los endpoints (las URLs) y
- * gestiona las peticiones y respuestas HTTP. La lógica de negocio se
- * delega a la capa de servicio.
- * 
+ * Controlador RESTful. Actúa como puerta de entrada a la API. Expone los
+ * endpoints (las URLs) y gestiona las peticiones y respuestas HTTP. La lógica
+ * de negocio se delega a la capa de servicio.
+ *
  */
 @RestController
 @RequestMapping("/API/api-torneo/partidos")
@@ -30,9 +33,9 @@ public class PartidoController {
     PartidoService partidoService;
 
     /**
-     * Endpoint que gestiona las peticiones GET llamando al método correspondiente
-     * del servicio
-     * 
+     * Endpoint que gestiona las peticiones GET llamando al método
+     * correspondiente del servicio
+     *
      * @return la lista de todos los partidos.
      */
     @GetMapping
@@ -42,12 +45,11 @@ public class PartidoController {
 
     /**
      * Endpoint para buscar un recurso por id.
-     * 
+     *
      * @param id - el id del recurso que queremos buscar.
      * @return el Partido al que corresponde el id proporcionado + código HTTP
-     *         200 (ok) o 404 (not found) si el id especificado no existe.
+     * 200 (ok) o 404 (not found) si el id especificado no existe.
      */
-
     // anotación de método para petición GET con variable (id)
     @GetMapping("/{id}")
     public ResponseEntity<Partido> getById(@PathVariable Long id) {
@@ -64,11 +66,10 @@ public class PartidoController {
     /**
      * endpoint que crea un nuevo recurso a partir de los datos enviados en el
      * cuerpo de la petición del cliente.
-     * 
+     *
      * @param partido el objeto recibido en el cuerpo de la petición
      * @return respuesta con código HTTP 201 (creado) y el objeto creado.
      */
-
     @PostMapping
     public ResponseEntity<Partido> postObject(@RequestBody Partido partido) {
 
@@ -78,18 +79,17 @@ public class PartidoController {
     }
 
     /**
-     * Endpoint para modificar / actualizar un recurso existente en la base de datos
-     * con los nuevos datos proporcionados por el cliente. Solicita la operación a
-     * la capa de servicio, que devuelve un contenedor y, según su contenido
-     * responderá con un código HTTP u otro.
-     * 
-     * @param id      el id proporcionadio para localizar el recurso en la base de
-     *                datos.
+     * Endpoint para modificar / actualizar un recurso existente en la base de
+     * datos con los nuevos datos proporcionados por el cliente. Solicita la
+     * operación a la capa de servicio, que devuelve un contenedor y, según su
+     * contenido responderá con un código HTTP u otro.
+     *
+     * @param id el id proporcionadio para localizar el recurso en la base de
+     * datos.
      * @param partido recurso con los nuevos datos.
      * @return respuesta con código HTTP 200 (ok) o 404 (not found) si el id no
-     *         existe.
+     * existe.
      */
-
     @PutMapping("/{id}")
     public ResponseEntity<Partido> putObject(@PathVariable Long id, @RequestBody Partido partido) {
 
@@ -103,15 +103,15 @@ public class PartidoController {
     }
 
     /**
-     * Endpoint para borrar un recurso de la base de datos según el id especificado
-     * por el cliente. Solicita el borrado a la capa de servicio y, según su
-     * resultado, proporcionará una respuesta con un código HTTP u otro.
-     * 
+     * Endpoint para borrar un recurso de la base de datos según el id
+     * especificado por el cliente. Solicita el borrado a la capa de servicio y,
+     * según su resultado, proporcionará una respuesta con un código HTTP u
+     * otro.
+     *
      * @param id el id del recurso a borrar
      * @return respuesta con código HTTP 204 (no content) Si se encontró el id y
-     *         por tanto se borró el recurso. Si no, devolverá 404 (not found).
+     * por tanto se borró el recurso. Si no, devolverá 404 (not found).
      */
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Partido> deleteObject(@PathVariable Long id) {
 
@@ -121,6 +121,31 @@ public class PartidoController {
 
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    // mod 1.2 
+    /**
+     * Endpoint para realizar una búsqueda por rango de años gracias a las
+     * anotaciones @RequestParam.
+     * Ej:http://localhost:8080/API/api-torneo/partidos/buscar-por-fechas?desde=2025-01-01&hasta=2025-01-14
+     *
+     * @param desde fecha inicio formato YYYY-MM-DD
+     * @param hasta desde inicio formato YYYY-MM-DD
+     * @return lista con los partidos coincidentes encontrados o respuesta 204
+     * No Content.
+     */
+    @GetMapping("/buscar-por-fechas")
+
+    public ResponseEntity<List<Partido>> getByDate(@RequestParam LocalDate desde, @RequestParam LocalDate hasta) {
+
+        List<Partido> partidosEncontrados = partidoService.buscarPorFechas(desde, hasta);
+
+        if (!partidosEncontrados.isEmpty()) {
+            return ResponseEntity.ok(partidosEncontrados);
+
+        } else {
+            return ResponseEntity.noContent().build();
         }
     }
 

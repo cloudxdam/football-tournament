@@ -63,7 +63,7 @@ INSERT INTO Jugador (nif, nombre, apellidos, id_equipo) VALUES ('59595959U', 'Va
 INSERT INTO Jugador (nif, nombre, apellidos, id_equipo) VALUES ('60606060V', 'Gerard', 'Fernández', 4);
 
 -- PARTIDOS
-INSERT INTO Partido (resultado) VALUES ('3-1');
-INSERT INTO Partido (resultado) VALUES ('0-0');
-INSERT INTO Partido (resultado) VALUES ('1-2');
-INSERT INTO Partido (resultado) VALUES ('5-0');
+INSERT INTO Partido (resultado, fecha) VALUES ('3-1', '2025-01-10');
+INSERT INTO Partido (resultado, fecha) VALUES ('0-0', '2025-01-10');
+INSERT INTO Partido (resultado, fecha) VALUES ('1-2', '2025-01-10');
+INSERT INTO Partido (resultado, fecha) VALUES ('5-0', '2025-01-10');

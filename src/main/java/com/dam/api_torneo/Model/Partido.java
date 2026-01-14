@@ -1,5 +1,7 @@
 package com.dam.api_torneo.Model;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,7 +13,6 @@ import lombok.Data;
  * Clase de entidad que actúa como modelo que define la estructura de los datos.
  * Esta clase Java se mapea a la tabla Partido de la base de datos.
  */
-
 @Entity
 @Table(name = "Partido")
 @Data
@@ -21,5 +22,7 @@ public class Partido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPartido;
     private String resultado;
+    private LocalDate fecha;
+
 
 }
